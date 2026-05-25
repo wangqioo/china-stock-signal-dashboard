@@ -885,5 +885,6 @@ init_watchlist_db(WATCHLIST_DB_PATH)
 
 if __name__ == "__main__":
     ensure_default_watchlist()
-    print("启动沪深 A 股信号看板: http://localhost:8877")
-    app.run(host="0.0.0.0", port=8877, debug=False, threaded=True)
+    port = int(os.environ.get("PORT", "8877"))
+    print(f"启动沪深 A 股信号看板: http://localhost:{port}")
+    app.run(host="0.0.0.0", port=port, debug=False, threaded=True)
