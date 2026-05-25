@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenv / build
+.venv/
+venv/
+dist/
+build/
+.env
+
+# Runtime data
+data/
+logs/
+reports/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Generated media/screenshots
+*.jpg
+*.jpeg
+*.png
+*.gif

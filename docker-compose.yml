@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  dashboard:
+    build: .
+    container_name: china_stock_signal_dashboard
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./indicators_pkg:/app/indicators_pkg
+      - ./tdx_parser:/app/tdx_parser
+      - ./dashboard:/app/dashboard
+    environment:
+      - TZ=Asia/Shanghai
