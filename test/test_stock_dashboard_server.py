@@ -104,6 +104,20 @@ def test_stock_list_falls_back_to_code_name_source(monkeypatch):
     assert server.resolve_stock_name("600519") == "贵州茅台"
 
 
+def test_resolve_stock_uses_known_name_without_fetching_slow_remote_list(monkeypatch):
+    def fail_if_remote_list_is_loaded(*args, **kwargs):
+        raise AssertionError("resolving a known default/watchlist symbol should not fetch the remote stock list")
+
+    monkeypatch.setattr(server, "get_stock_list", fail_if_remote_list_is_loaded)
+
+    assert server.resolve_stock("000725") == {
+        "symbol": "000725",
+        "name": "京东方A",
+        "exchange": "SZ",
+        "sina_code": "sz000725",
+    }
+
+
 def test_daily_data_uses_secondary_source_when_primary_source_is_unavailable(monkeypatch):
     symbol_cfg = server.resolve_stock("000001", "平安银行")
     cache_key = f"daily_{symbol_cfg['symbol']}"

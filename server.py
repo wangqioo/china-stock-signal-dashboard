@@ -363,11 +363,37 @@ def get_stock_list(force=False):
     return _STOCK_LIST_CACHE["items"]
 
 
+def _resolve_local_stock_name(symbol, db_path=WATCHLIST_DB_PATH):
+    """Resolve names from built-in/default or local watchlist data without remote stock-list calls."""
+    try:
+        code = normalize_stock_code(symbol)
+    except ValueError:
+        return None
+
+    for default_symbol, default_name in DEFAULT_WATCHLIST:
+        if default_symbol == code:
+            return default_name
+
+    try:
+        if os.path.exists(str(db_path)):
+            init_watchlist_db(db_path)
+            with _connect_watchlist(db_path) as conn:
+                row = conn.execute("SELECT name FROM watchlist WHERE symbol=?", (code,)).fetchone()
+            if row and row["name"]:
+                return row["name"]
+    except Exception as exc:
+        print(f"local stock name lookup failed[{code}]: {exc}")
+    return None
+
+
 def resolve_stock_name(symbol):
     try:
         code = normalize_stock_code(symbol)
     except ValueError:
         return None
+    local_name = _resolve_local_stock_name(code)
+    if local_name:
+        return local_name
     for item in get_stock_list():
         if item["symbol"] == code:
             return item["name"]
