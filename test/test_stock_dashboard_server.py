@@ -27,6 +27,34 @@ def test_stock_exchange_infers_mainland_exchange():
     assert server.infer_exchange("002594") == "SZ"
 
 
+def test_default_watchlist_matches_requested_seed_stocks():
+    expected = [
+        ("000725", "京东方A"),
+        ("002031", "巨轮智能"),
+        ("600433", "冠豪高新"),
+        ("000060", "中金岭南"),
+        ("603077", "和邦生物"),
+        ("600871", "石化油服"),
+        ("002421", "达实智能"),
+        ("600039", "四川路桥"),
+        ("002640", "跨境通"),
+        ("601766", "中国中车"),
+    ]
+    assert server.DEFAULT_WATCHLIST == expected
+    assert [server.infer_exchange(symbol) for symbol, _ in expected] == [
+        "SZ",
+        "SZ",
+        "SH",
+        "SZ",
+        "SH",
+        "SH",
+        "SZ",
+        "SH",
+        "SZ",
+        "SH",
+    ]
+
+
 def test_watchlist_crud_persists_unique_rows(tmp_path):
     db_path = tmp_path / "watchlist.db"
     server.init_watchlist_db(str(db_path))

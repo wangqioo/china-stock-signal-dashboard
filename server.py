@@ -43,11 +43,18 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 WATCHLIST_DB_PATH = os.path.join(CACHE_DIR, "watchlist.db")
 
 DEFAULT_WATCHLIST = [
-    ("000001", "平安银行"),
-    ("600519", "贵州茅台"),
-    ("300750", "宁德时代"),
-    ("002594", "比亚迪"),
+    ("000725", "京东方A"),
+    ("002031", "巨轮智能"),
+    ("600433", "冠豪高新"),
+    ("000060", "中金岭南"),
+    ("603077", "和邦生物"),
+    ("600871", "石化油服"),
+    ("002421", "达实智能"),
+    ("600039", "四川路桥"),
+    ("002640", "跨境通"),
+    ("601766", "中国中车"),
 ]
+DEFAULT_SYMBOL, DEFAULT_SYMBOL_NAME = DEFAULT_WATCHLIST[0]
 
 # ── 股票代码与自选股 ───────────────────────────────────────────────
 
@@ -545,7 +552,7 @@ def get_market_status(symbol=None, now=None):
 # ── 核心计算 ───────────────────────────────────────────────────────
 
 
-def get_data(symbol="000001", period="30", name=None):
+def get_data(symbol=DEFAULT_SYMBOL, period="30", name=None):
     from data_fetcher import calculate_capital_flow, calculate_support_resistance
     from indicators import calc_bsd_wang, calc_main_signals, get_latest_signals
 
@@ -678,7 +685,7 @@ def get_data(symbol="000001", period="30", name=None):
 @app.route("/api/data")
 def api_data():
     period = request.args.get("period", "30")
-    symbol = request.args.get("symbol", "000001")
+    symbol = request.args.get("symbol", DEFAULT_SYMBOL)
     name = request.args.get("name")
     mode = request.args.get("mode", "full")
     try:
@@ -751,7 +758,7 @@ def api_resolve():
 
 @app.route("/api/trend")
 def api_trend():
-    symbol = request.args.get("symbol", "000001")
+    symbol = request.args.get("symbol", DEFAULT_SYMBOL)
     name = request.args.get("name")
     try:
         sym = resolve_stock(symbol, name)
@@ -820,7 +827,7 @@ def api_trend():
 
 @app.route("/api/market_status")
 def api_market_status():
-    symbol = request.args.get("symbol", "000001")
+    symbol = request.args.get("symbol", DEFAULT_SYMBOL)
     return jsonify(get_market_status(symbol))
 
 
