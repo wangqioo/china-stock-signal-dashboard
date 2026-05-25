@@ -171,6 +171,20 @@ def test_frontend_removes_reminder_and_notification_code():
         assert term not in html
 
 
+def test_frontend_serves_chart_library_locally_for_domestic_access():
+    from pathlib import Path
+
+    html = Path("dashboard/index.html").read_text(encoding="utf-8")
+    assert "https://unpkg.com" not in html
+    assert "/dashboard/vendor/lightweight-charts.standalone.production.js" in html
+    assert Path("dashboard/vendor/lightweight-charts.standalone.production.js").is_file()
+
+    client = server.app.test_client()
+    response = client.get("/dashboard/vendor/lightweight-charts.standalone.production.js")
+    assert response.status_code == 200
+    assert b"Lightweight Charts" in response.data[:500]
+
+
 def test_repository_removes_futures_and_reminder_artifacts():
     """新项目不能残留期货对象或旧提醒/推送系统。"""
     from pathlib import Path
